@@ -1,4 +1,6 @@
-FROM test-image
+ARG TAG=latest
+ARG IMAGE=debian
+FROM ${IMAGE}:${TAG}
 
 # install supervisor just in case it isn't already installed
 RUN apt-get update && apt-get install -y openssh-server supervisor
@@ -7,13 +9,13 @@ ADD *.conf /etc/supervisor/conf.d/
 
 RUN mkdir -p /var/run/sshd /var/log/supervisor
 
-ADD ./google_compute_engine.pub ./
+ADD ./id_rsa.pub ./
 
 ADD ./.pycharm_helpers /root/.pycharm_helpers
 
 # http://www.linuxproblem.org/art_9.html
 RUN mkdir /root/.ssh
-RUN cat google_compute_engine.pub >> /root/.ssh/authorized_keys
+RUN cat id_rsa.pub >> /root/.ssh/authorized_keys
 
 RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
 
