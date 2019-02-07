@@ -9,13 +9,11 @@ ADD *.conf /etc/supervisor/conf.d/
 
 RUN mkdir -p /var/run/sshd /var/log/supervisor
 
-ADD ./id_rsa.pub ./
-
 ADD ./.pycharm_helpers /root/.pycharm_helpers
 
 # http://www.linuxproblem.org/art_9.html
-RUN mkdir /root/.ssh
-RUN cat id_rsa.pub >> /root/.ssh/authorized_keys
+WORKDIR /root/.ssh
+ADD ./authorized_keys ./
 
 RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
 
